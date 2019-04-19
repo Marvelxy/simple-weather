@@ -1,2 +1,2 @@
 # simple-weather
-This is a simple weather scrapper script. It gets forecasts on a provided URL from National Weather Service (https://forecast.weather.gov). It's a work in progress, and not fully functional at the moment.
+It's a simple script for the weather scrapper. It gets National Weather Service (https:/forecast.weather.gov) forecasts on a provided URL. It's an ongoing work and currently not fully functional.
