@@ -59,6 +59,24 @@ for fl in text_forcast_label:
 #for day in detailed_forcast:
 #    print(day + ' : ' + detailed_forcast[day], end='\n')
 
+
+
+
 current_conditions_html = html.find(id='current-conditions')
-print(current_conditions_html)
-#
+#print(current_conditions_html)
+
+
+panel_heading = current_conditions_html.find('div', class_='panel-heading');
+#print(panel_heading)
+
+# Get panel header text
+panel_header = panel_heading.find('b');
+print(panel_header.get_text())
+
+# Get panel title text
+panel_header_title = panel_heading.find(class_='panel-title');
+print(panel_header_title.get_text())
+
+panel_header_title_small_text = panel_heading.find(class_='smallTxt');
+for st in panel_header_title_small_text:
+    print(st)
