@@ -10,7 +10,7 @@ def simple_get(url):
                 return resp.content
             else:
                 return None
-    
+
     except RequestException as e:
         log_error('Error during requests to {0} : {1}'.format(url, str(e)))
         return None
@@ -28,6 +28,7 @@ raw_html = simple_get('https://forecast.weather.gov/MapClick.php?lat=42.3587&lon
 html = BeautifulSoup(raw_html, 'html.parser')
 target = html.find(id='detailed-forecast-body')
 
+#print(html)
 
 text_forcast_label = []
 forcast_label = target.find_all('div', class_='forecast-label');
@@ -55,5 +56,9 @@ for fl in text_forcast_label:
 
 #print(detailed_forcast)
 
-for day in detailed_forcast:
-    print(day + ' : ' + detailed_forcast[day], end='\n')
+#for day in detailed_forcast:
+#    print(day + ' : ' + detailed_forcast[day], end='\n')
+
+current_conditions_html = html.find(id='current-conditions')
+print(current_conditions_html)
+#
