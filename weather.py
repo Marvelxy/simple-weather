@@ -2,6 +2,7 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+import bs4
 
 def simple_get(url):
     try:
@@ -77,6 +78,16 @@ print(panel_header.get_text())
 panel_header_title = panel_heading.find(class_='panel-title');
 print(panel_header_title.get_text())
 
+coordinates = {}
 panel_header_title_small_text = panel_heading.find(class_='smallTxt');
 for st in panel_header_title_small_text:
-    print(st)
+    #current_key = ''
+    if isinstance(st, bs4.element.Tag):
+        loc = st.get_text()
+        #print(loc)
+        current_key = loc.replace(':\xa0','')
+    else:
+        #print(st)
+        coordinates[current_key] = st
+
+print(coordinates)
