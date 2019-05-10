@@ -3,6 +3,7 @@ from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 import bs4
+import json
 
 def simple_get(url):
     try:
@@ -45,8 +46,6 @@ for t in forcast_text:
     #print(t.get_text())
     text_forcast_text.append(t.get_text())
 
-#print(text_forcast_label)
-#print(text_forcast_text)
 
 detailed_forcast = {}
 
@@ -56,11 +55,6 @@ for fl in text_forcast_label:
             detailed_forcast[fl] = ft
 
 #print(detailed_forcast)
-
-#for day in detailed_forcast:
-#    print(day + ' : ' + detailed_forcast[day], end='\n')
-
-
 
 
 current_conditions_html = html.find(id='current-conditions')
@@ -72,12 +66,17 @@ panel_heading = current_conditions_html.find('div', class_='panel-heading');
 
 # Get panel header text
 panel_header = panel_heading.find('b');
-print(panel_header.get_text())
+panel_header = panel_header.get_text()
+#print(panel_header)
+
 
 # Get panel title text
 panel_header_title = panel_heading.find(class_='panel-title');
-print(panel_header_title.get_text())
+panel_header_title = panel_header_title.get_text()
+#print(panel_header_title)
 
+
+# This section gets the coordinates
 coordinates = {}
 panel_header_title_small_text = panel_heading.find(class_='smallTxt');
 for st in panel_header_title_small_text:
@@ -90,4 +89,16 @@ for st in panel_header_title_small_text:
         #print(st)
         coordinates[current_key] = st
 
-print(coordinates)
+#print(coordinates)
+
+
+full_report = {}
+full_report['panel_header'] = panel_header
+full_report['panel_header_title'] = panel_header_title
+full_report['coordinates'] = coordinates
+full_report['detailed_forcast'] = detailed_forcast
+
+#full_report_json = json.dumps(full_report)
+#print(full_report_json)
+
+#print(full_report)
