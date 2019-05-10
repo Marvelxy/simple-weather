@@ -33,14 +33,14 @@ target = html.find(id='detailed-forecast-body')
 #print(html)
 
 text_forcast_label = []
-forcast_label = target.find_all('div', class_='forecast-label');
+forcast_label = target.find_all('div', class_='forecast-label')
 # Create a list of forcast label
 for l in forcast_label:
     #print(l.get_text())
     text_forcast_label.append(l.get_text())
     
 text_forcast_text = []
-forcast_text = target.find_all('div', class_='forecast-text');
+forcast_text = target.find_all('div', class_='forecast-text')
 # Create a list of forcast text
 for t in forcast_text:
     #print(t.get_text())
@@ -61,24 +61,24 @@ current_conditions_html = html.find(id='current-conditions')
 #print(current_conditions_html)
 
 
-panel_heading = current_conditions_html.find('div', class_='panel-heading');
+panel_heading = current_conditions_html.find('div', class_='panel-heading')
 #print(panel_heading)
 
 # Get panel header text
-panel_header = panel_heading.find('b');
+panel_header = panel_heading.find('b')
 panel_header = panel_header.get_text()
 #print(panel_header)
 
 
 # Get panel title text
-panel_header_title = panel_heading.find(class_='panel-title');
+panel_header_title = panel_heading.find(class_='panel-title')
 panel_header_title = panel_header_title.get_text()
 #print(panel_header_title)
 
 
 # This section gets the coordinates
 coordinates = {}
-panel_header_title_small_text = panel_heading.find(class_='smallTxt');
+panel_header_title_small_text = panel_heading.find(class_='smallTxt')
 for st in panel_header_title_small_text:
     #current_key = ''
     if isinstance(st, bs4.element.Tag):
@@ -92,13 +92,43 @@ for st in panel_header_title_small_text:
 #print(coordinates)
 
 
+current_conditions_summary = {}
+current_conditions_summary_html = html.find(id='current_conditions-summary')
+
+print(current_conditions_summary_html)
+
+image = current_conditions_summary_html.find('img')
+image_src = 'https://forecast.weather.gov/' + image['src']
+
+current_conditions_summary['image_src'] = image_src
+
+paragraphs = current_conditions_summary_html.findAll('p')
+for p in paragraphs:
+    #print(p.get_text())
+    #current_conditions_summary[p] = p.get_text()
+    item = p.get_text()
+    if item == 'Overcast':
+        current_conditions_summary['mini_title'] = item
+        #print(item)
+    else:
+        #print(item[-1:])
+        if item[-1:] == 'F':
+            current_conditions_summary['Fahrenheit'] = item
+        elif item[-1:] == 'C':
+            current_conditions_summary['Celsius'] = item
+        
+    
+
+
 full_report = {}
 full_report['panel_header'] = panel_header
 full_report['panel_header_title'] = panel_header_title
 full_report['coordinates'] = coordinates
+full_report['current_conditions_summary'] = current_conditions_summary
 full_report['detailed_forcast'] = detailed_forcast
 
-#full_report_json = json.dumps(full_report)
-#print(full_report_json)
+# convert the report to json. This is pointless for now, I only used it to make sure my dictionary is well formed
+# full_report_json = json.dumps(full_report)
+# print(full_report_json)
 
-#print(full_report)
+print(full_report)
