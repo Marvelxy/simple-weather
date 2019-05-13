@@ -95,7 +95,7 @@ for st in panel_header_title_small_text:
 current_conditions_summary = {}
 current_conditions_summary_html = html.find(id='current_conditions-summary')
 
-print(current_conditions_summary_html)
+#print(current_conditions_summary_html)
 
 image = current_conditions_summary_html.find('img')
 image_src = 'https://forecast.weather.gov/' + image['src']
@@ -119,12 +119,41 @@ for p in paragraphs:
         
     
 
+current_conditions_detail = {}
+current_conditions_detail_html = html.find(id='current_conditions_detail')
+table_rows = current_conditions_detail_html.findAll('tr')
+
+#print(table_rows)
+title = []
+body = []
+for tr in table_rows:
+    tit = tr.find('b')
+    title.append(tit.get_text())
+    
+    bod = tr.findAll('td')
+    for b in bod:
+        if(b.has_attr('class')):
+            print()
+        else:
+            for td in b:
+                body.append(td.replace('\n','').strip())
+    
+#print(title)
+
+for t in title:
+    for b in body:
+        if title.index(t) == body.index(b):
+            current_conditions_detail[t] = b
+
+
+#print(current_conditions_detail)
 
 full_report = {}
 full_report['panel_header'] = panel_header
 full_report['panel_header_title'] = panel_header_title
 full_report['coordinates'] = coordinates
 full_report['current_conditions_summary'] = current_conditions_summary
+full_report['current_conditions_detail'] = current_conditions_detail
 full_report['detailed_forcast'] = detailed_forcast
 
 # convert the report to json. This is pointless for now, I only used it to make sure my dictionary is well formed
