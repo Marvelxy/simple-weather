@@ -4,6 +4,20 @@ from contextlib import closing
 from bs4 import BeautifulSoup
 import bs4
 import json
+import mysql.connector
+
+db = mysql.connector.connect(
+    host = 'localhost',
+    user = 'root',
+    password = '',
+    database = 'skraped'
+)
+
+query = db.cursor()
+
+#query.execute("CREATE DATABASE scappedweather")
+#query.execute("CREATE TABLE customers (name VARCHAR(255))")
+
 
 def simple_get(url):
     try:
@@ -47,12 +61,14 @@ for t in forcast_text:
     text_forcast_text.append(t.get_text())
 
 
-detailed_forcast = {}
+#detailed_forcast = {}
+detailed_forcast = []
 
 for fl in text_forcast_label:
     for ft in text_forcast_text:
         if text_forcast_label.index(fl) == text_forcast_text.index(ft):
-            detailed_forcast[fl] = ft
+            #detailed_forcast[fl] = ft
+            detailed_forcast.append([fl, ft])
 
 #print(detailed_forcast)
 
@@ -160,4 +176,30 @@ full_report['detailed_forcast'] = detailed_forcast
 # full_report_json = json.dumps(full_report)
 # print(full_report_json)
 
-print(full_report)
+#print(full_report)
+
+query.execute("SELECT COUNT(panel_header_title) FROM weathers WHERE panel_header_title = panel_header_title")
+rowcount = query.fetchone()[0]
+
+if rowcount == 0:
+    sql = "INSERT INTO weathers (panel_header, panel_header_title, coordinates, current_conditions_summary, current_conditions_detail, detailed_forcast) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (panel_header, panel_header_title, str(coordinates), str(current_conditions_summary), str(current_conditions_detail), str(detailed_forcast))
+    query.execute(sql, val)
+
+    
+    db.commit()
+    print('Data saved to db!')
+else:
+    #update
+    query.execute("SELECT * FROM weathers WHERE panel_header_title = panel_header_title")
+    
+    myresult = query.fetchone()[0]
+    #print(myresult[2])
+    sql = "UPDATE weathers SET panel_header = %s, panel_header_title = %s, coordinates = %s, current_conditions_summary = %s, current_conditions_detail = %s, detailed_forcast = %s WHERE panel_header_title = %s"
+    val = (panel_header, panel_header_title, str(coordinates), str(current_conditions_summary), str(current_conditions_detail), str(detailed_forcast), panel_header_title)
+    
+    query.execute(sql, val)
+    
+    db.commit()
+    print('Data updated!')
+    
